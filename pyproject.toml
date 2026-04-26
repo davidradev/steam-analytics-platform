@@ -1,0 +1,14 @@
+[project]
+name = "snowpipe"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "apache-airflow>=3.2.1",
+    "azure-storage-blob>=12.28.0",
+    "ipykernel>=7.2.0",
+    "pandas>=3.0.2",
+    "python-dotenv>=1.2.2",
+    "requests>=2.33.1",
+]
