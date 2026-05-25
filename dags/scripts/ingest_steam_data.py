@@ -1,5 +1,4 @@
 import os
-import pandas as pd
 import json
 import requests
 from azure.storage.blob import BlobServiceClient
