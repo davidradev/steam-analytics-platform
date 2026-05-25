@@ -1,4 +1,4 @@
-# Python-generated files
+# Python
 __pycache__/
 *.py[oc]
 build/
@@ -9,11 +9,19 @@ wheels/
 # Virtual environments
 .venv
 
-# Env
+# Credentials
 .env
 
-# Jupyter Notebook checkpoints
+# Jupyter
 .ipynb_checkpoints/
 
-# data
+# Data
 data/
+
+# Airflow & dbt logs
+logs/
+
+# dbt artifacts (generated at runtime)
+dbt/target/
+dbt/logs/
+dbt/dbt_packages/

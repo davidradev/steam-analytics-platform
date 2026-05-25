@@ -1,0 +1,61 @@
+name: Steam Data Pipeline
+
+on:
+  schedule:
+    - cron: '0 */8 * * *'  # 00:00, 08:00, 16:00 UTC
+  workflow_dispatch:        # Lanzamiento manual desde GitHub UI
+
+jobs:
+  ingest:
+    name: Extract & Load to Azure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install ingestion dependencies
+        run: pip install requests azure-storage-blob python-dotenv
+
+      - name: Run ingestion script
+        env:
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+          AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+          AZURE_CONTAINER_NAME: ${{ secrets.AZURE_CONTAINER_NAME }}
+        run: python dags/scripts/ingest_steam_data.py
+
+  transform:
+    name: Transform with dbt
+    runs-on: ubuntu-latest
+    needs: ingest   # Solo corre si ingest terminó bien
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dbt
+        run: pip install dbt-snowflake
+
+      - name: Run dbt models
+        working-directory: dbt
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+        run: dbt run --profiles-dir .
+
+      - name: Run dbt tests
+        working-directory: dbt
+        env:
+          SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+        run: dbt test --profiles-dir .

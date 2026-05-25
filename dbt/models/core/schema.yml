@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: dim_games
+    description: "Unique games catalogue built from all snapshots."
+    columns:
+      - name: appid
+        tests:
+          - unique
+          - not_null
+
+  - name: fact_game_metrics
+    description: "Incremental time-series of player counts and rankings per game per snapshot."
+    columns:
+      - name: snapshot_at
+        tests:
+          - not_null
+      - name: appid
+        tests:
+          - not_null
+      - name: concurrent_players
+        tests:
+          - not_null
+      - name: rank
+        tests:
+          - not_null

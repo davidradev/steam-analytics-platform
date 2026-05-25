@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: raw
+    database: STEAM_DW
+    schema: RAW
+    tables:
+      - name: raw_steam_snapshots
+        description: "Raw JSON snapshots from Steam API loaded by Snowpipe every 8 hours."
+        config:
+          freshness:
+            warn_after: {count: 9, period: hour}
+            error_after: {count: 25, period: hour}
+          loaded_at_field: loaded_at

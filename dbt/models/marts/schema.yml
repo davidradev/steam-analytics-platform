@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: mart_trending_games
+    description: "Games ranked by 7-day rolling average growth. Powers the trending section of the dashboard."
+    columns:
+      - name: appid
+        tests:
+          - not_null
+          - unique
+      - name: trend_rank
+        tests:
+          - not_null
+      - name: rolling_7d_avg_growth
+        description: "Null on first snapshot — requires at least 2 periods to compute."
+
+  - name: mart_top_games_current
+    description: "Latest snapshot rankings with period-over-period changes."
+    columns:
+      - name: appid
+        tests:
+          - not_null
+          - unique
+      - name: rank
+        tests:
+          - not_null
+      - name: concurrent_players
+        tests:
+          - not_null

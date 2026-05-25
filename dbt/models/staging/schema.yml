@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: stg_steam_snapshots
+    description: "Flattened Steam snapshots — one row per game per API pull."
+    columns:
+      - name: snapshot_at
+        description: "UTC timestamp of the Steam API snapshot."
+        tests:
+          - not_null
+      - name: appid
+        description: "Steam application ID."
+        tests:
+          - not_null
+      - name: rank
+        description: "Rank by concurrent players at snapshot time."
+        tests:
+          - not_null
+      - name: concurrent_players
+        description: "Number of players in-game at snapshot time."
+        tests:
+          - not_null
+      - name: peak_players
+        description: "Peak players recorded for this game."
+        tests:
+          - not_null

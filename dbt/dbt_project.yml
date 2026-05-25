@@ -1,0 +1,26 @@
+name: 'steam_dbt'
+version: '1.0.0'
+profile: 'steam_dbt'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  steam_dbt:
+    staging:
+      +materialized: view
+      +schema: STAGING
+    core:
+      +materialized: table
+      +schema: CORE
+    marts:
+      +materialized: table
+      +schema: MARTS
