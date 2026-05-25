@@ -2,7 +2,7 @@
 
 End-to-end data engineering pipeline that tracks Steam gaming trends in real time. Extracts concurrent player data from the Steam API every 8 hours, stores raw data in Azure Blob Storage, loads it automatically into Snowflake via Snowpipe, transforms it with dbt, and serves the results as a live dashboard.
 
-**[→ Live Dashboard](https://davidradev.com/projects/steam)**
+**[→ Live Dashboard](https://www.davidra.dev/projects/steam)**
 
 ---
 
