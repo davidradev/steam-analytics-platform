@@ -68,12 +68,6 @@ def main():
         ORDER BY rank
         LIMIT 20
     """)
-    all_appids = [g["appid"] for g in top_games]
-    names = fetch_game_names(all_appids)
-    for g in top_games:
-        g["name"] = names.get(g["appid"], str(g["appid"]))
-    upload_json(container, top_games, "top_games_current.json")
-
     trending = query_to_list(cursor, """
         SELECT appid, concurrent_players, rolling_7d_avg_players,
                rolling_7d_avg_growth, trend_rank
@@ -81,6 +75,13 @@ def main():
         ORDER BY trend_rank
         LIMIT 20
     """)
+
+    all_appids = list({g["appid"] for g in top_games} | {g["appid"] for g in trending})
+    names = fetch_game_names(all_appids)
+    for g in top_games:
+        g["name"] = names.get(g["appid"], str(g["appid"]))
+    upload_json(container, top_games, "top_games_current.json")
+
     for g in trending:
         g["name"] = names.get(g["appid"], str(g["appid"]))
     upload_json(container, trending, "trending_games.json")
