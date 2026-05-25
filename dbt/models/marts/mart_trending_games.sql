@@ -1,4 +1,3 @@
--- Games ranked by 7-snapshot rolling average growth in concurrent players
 with metrics as (
     select * from {{ ref('fact_game_metrics') }}
 ),
@@ -9,19 +8,22 @@ rolling as (
         snapshot_at,
         concurrent_players,
         rank,
-        pct_change_players,
-        rank_change,
         avg(concurrent_players) over (
             partition by appid
             order by snapshot_at
-            rows between 20 preceding and current row  -- ~7 days at 8h intervals
-        ) as rolling_7d_avg_players,
-        avg(pct_change_players) over (
+            rows between 20 preceding and current row
+        ) as rolling_7d_avg_players
+    from metrics
+),
+
+growth as (
+    select
+        *,
+        lag(rolling_7d_avg_players) over (
             partition by appid
             order by snapshot_at
-            rows between 20 preceding and current row
-        ) as rolling_7d_avg_growth
-    from metrics
+        ) as prev_rolling_7d_avg_players
+    from rolling
 ),
 
 latest_snapshot as (
@@ -30,19 +32,17 @@ latest_snapshot as (
 
 final as (
     select
-        r.appid,
-        r.snapshot_at,
-        r.concurrent_players,
-        r.rank,
-        r.pct_change_players,
-        r.rank_change,
-        r.rolling_7d_avg_players,
-        r.rolling_7d_avg_growth,
+        g.appid,
+        g.snapshot_at,
+        g.concurrent_players,
+        g.rank,
+        g.rolling_7d_avg_players,
+        {{ pct_change('g.rolling_7d_avg_players', 'g.prev_rolling_7d_avg_players') }} as rolling_7d_avg_growth,
         dense_rank() over (
-            order by r.rolling_7d_avg_growth desc nulls last
+            order by {{ pct_change('g.rolling_7d_avg_players', 'g.prev_rolling_7d_avg_players') }} desc nulls last
         ) as trend_rank
-    from rolling r
-    inner join latest_snapshot l on r.snapshot_at = l.max_ts
+    from growth g
+    inner join latest_snapshot l on g.snapshot_at = l.max_ts
 )
 
 select * from final

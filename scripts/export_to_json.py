@@ -76,7 +76,7 @@ def main():
 
     trending = query_to_list(cursor, """
         SELECT appid, concurrent_players, rolling_7d_avg_players,
-               rolling_7d_avg_growth, trend_rank, pct_change_players
+               rolling_7d_avg_growth, trend_rank
         FROM STEAM_DW.STAGING_MARTS.MART_TRENDING_GAMES
         ORDER BY trend_rank
         LIMIT 20
