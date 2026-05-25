@@ -2720,6 +2720,7 @@ dependencies = [
     { name = "pandas" },
     { name = "python-dotenv" },
     { name = "requests" },
+    { name = "snowflake-connector-python" },
 ]
 
 [package.metadata]
@@ -2731,6 +2732,7 @@ requires-dist = [
     { name = "pandas", specifier = ">=3.0.2" },
     { name = "python-dotenv", specifier = ">=1.2.2" },
     { name = "requests", specifier = ">=2.33.1" },
+    { name = "snowflake-connector-python", specifier = ">=4.5.0" },
 ]
 
 [[package]]
